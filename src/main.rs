@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use std::fs::{File,create_dir_all};
 
 use rocket::Data;
-use rocket::response::Redirect;
+use rocket::http::Status;
 
 #[get("/<path..>")]
 fn get(path: PathBuf) -> Option<File> {
@@ -15,12 +15,12 @@ fn get(path: PathBuf) -> Option<File> {
 }
 
 #[put("/<path..>", data = "<data>")]
-fn put(path: PathBuf, data: Data) -> io::Result<Redirect> {
+fn put(path: PathBuf, data: Data) -> io::Result<Status> {
     let mut file_path = PathBuf::from("public");
     file_path.push(path.as_path());
     create_dir_all(file_path.parent().unwrap())?;
     data.stream_to_file(file_path.as_path())?;
-    Ok(Redirect::found(uri!(get: path = path)))
+    Ok(Status::NoContent)
 }
 
 fn main() {
