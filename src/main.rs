@@ -32,8 +32,39 @@ fn delete(path: PathBuf) -> io::Result<Status> {
     Ok(Status::NoContent)
 }
 
+fn rocket() -> rocket::Rocket {
+    rocket::ignite().mount("/", routes![get,put,delete])
+}
+
 fn main() {
-    rocket::ignite()
-        .mount("/", routes![get,put,delete])
-        .launch();
+    rocket().launch();
+}
+
+#[cfg(test)]
+mod test {
+    use super::rocket;
+    use rocket::local::Client;
+    use rocket::http::Status;
+
+    #[test]
+    fn test_put() {
+        let client = Client::new(rocket()).unwrap();
+        let response = client.put("/test").body("test").dispatch();
+        assert_eq!(response.status(), Status::NoContent);
+    }
+
+    #[test]
+    fn test_get() {
+        let client = Client::new(rocket()).unwrap();
+        let mut response = client.get("/test").dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.body_string(), Some("test".into()));
+    }
+
+    #[test]
+    fn test_delete() {
+        let client = Client::new(rocket()).unwrap();
+        let response = client.delete("/test").dispatch();
+        assert_eq!(response.status(), Status::NoContent);
+    }
 }
