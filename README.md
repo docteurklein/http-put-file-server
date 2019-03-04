@@ -17,3 +17,7 @@ Upload `$FILE` to the server and name it with a random UUID of my chosing in a f
 Get the file:
 
     curl "localhost:8000/$(whoami)/$FILE" -o $FILE
+
+Delete the file:
+
+    curl -X DELETE "localhost:8000/$(whoami)/$FILE"

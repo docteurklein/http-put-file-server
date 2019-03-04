@@ -3,15 +3,16 @@
 #[macro_use] extern crate rocket;
 use std::io;
 use std::path::PathBuf;
-use std::fs::{File,create_dir_all};
+use std::fs::{File,create_dir_all,remove_file};
 
 use rocket::Data;
 use rocket::http::Status;
 
 #[get("/<path..>")]
 fn get(path: PathBuf) -> Option<File> {
-    let filename = format!("public/{path}", path = path.as_path().display());
-    File::open(&filename).ok()
+    let mut file_path = PathBuf::from("public");
+    file_path.push(path.as_path());
+    File::open(file_path).ok()
 }
 
 #[put("/<path..>", data = "<data>")]
@@ -23,8 +24,16 @@ fn put(path: PathBuf, data: Data) -> io::Result<Status> {
     Ok(Status::NoContent)
 }
 
+#[delete("/<path..>")]
+fn delete(path: PathBuf) -> io::Result<Status> {
+    let mut file_path = PathBuf::from("public");
+    file_path.push(path.as_path());
+    remove_file(file_path)?;
+    Ok(Status::NoContent)
+}
+
 fn main() {
     rocket::ignite()
-        .mount("/", routes![put,get])
+        .mount("/", routes![get,put,delete])
         .launch();
 }
