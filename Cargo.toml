@@ -1,5 +1,5 @@
 [package]
-name = "http-put-file-server"
+name = "http_put_file_server"
 version = "0.1.0"
 authors = ["Klein Florian <florian.klein@free.fr>"]
 edition = "2018"

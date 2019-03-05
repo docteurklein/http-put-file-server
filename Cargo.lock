@@ -78,7 +78,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "http-put-file-server"
+name = "http_put_file_server"
 version = "0.1.0"
 dependencies = [
  "rocket 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
